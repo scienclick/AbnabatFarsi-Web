@@ -208,7 +208,8 @@ public class ActorGenerator {
                 pen.addAction(scaleTo(GameConfig.PEN_SCALE_UP, GameConfig.PEN_SCALE_UP, GameConfig.PEN_SCALE_DURATION));
                 GameManager.INSTANCE.update_previous_Level(com.nabatfarsi.common.GameManager.INSTANCE.get_current_Level());
 
-                Gdx.app.exit();
+                // Gdx.app.exit() can't close a browser tab; navigate back to the landing page instead.
+                Gdx.net.openURI("/");
 
             }
 

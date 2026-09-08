@@ -24,6 +24,7 @@ Thumbs.db
 
 # Local environment (may contain SDK paths)
 local.properties
+.env
 
 # Logs
 *.log

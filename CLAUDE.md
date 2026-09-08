@@ -21,7 +21,9 @@ There are no unit tests in this repo currently.
 
 ### Docker
 
-`Dockerfile` builds the WAR with a `gradle:7.6-jdk8` image, then unpacks it into an `nginx:1.25-alpine` image (`nginx.conf` handles SPA fallback and long-lived caching for `.cache.js`/atlas/image assets). Run locally via `docker-compose up` (serves on host port 8080).
+`docker-compose.yml` runs two services: `app` (the game — `Dockerfile` builds the WAR with a `gradle:7.6-jdk8` image, then unpacks it into an `nginx:1.25-alpine` image; `nginx.conf` handles SPA fallback, long-lived caching for `.cache.js`/atlas/image assets, and reverse-proxies `/contact/` to `contact-api`) and `contact-api` (the landing page's contact-form backend, see below). Serves on host port **8081** (8080 is commonly taken by other local projects).
+
+`contact-api` requires `CONTACT_ADMIN_PASSWORD` to be set — copy `.env.example` to `.env` (gitignored) and set a real password before `docker compose up`; the container refuses to start otherwise.
 
 ### GWT build gotchas (do not "simplify" these away)
 
@@ -35,6 +37,7 @@ The GWT toolchain here is fragile — several non-obvious fixes hold the build t
 - **`index.html` at the WAR root**: neither the gwt plugin's war wiring nor the standard `war` plugin's default `webAppDir` (`src/main/webapp`, unused here — real static assets live in `html/webapp/`) puts `webapp/index.html` at the WAR root. `html/build.gradle`'s `war { from('webapp') { include 'index.html' } }` handles just that one file (game assets already reach the war correctly via the preloader/`gdx.assetpath` mechanism above — don't widen this to `from('webapp')` without excludes, or you'll double-ship unhashed copies of `gameplay/`/`gamesounds/`).
 - **nginx's base image ships its own `index.html`**: `unzip` without `-o` silently skips files that already exist when run non-interactively, so the WAR's `index.html` never overwrote nginx's welcome page. The Dockerfile clears `/usr/share/nginx/html` before unzipping (`-o` is also set as a second safety net).
 - `java.util.UUID` is not in GWT's JRE emulation — avoid it in `core` code (there's no other emulation-gap workaround needed currently, but keep this in mind if adding `java.util.*` usage to shared code).
+- **The `embed-<module>` container id is load-bearing**: `GwtApplication.onModuleLoad()` looks for `document.getElementById("embed-" + GWT.getModuleName())` — since `GdxDefinition.gwt.xml` has `rename-to="nabatfarsi"`, that id must be exactly `embed-nabatfarsi`. Get it wrong (e.g. a generic `embed-html`) and GWT silently falls back to creating its own unstyled canvas appended to `<body>`, which renders correctly but in the wrong place/size — no error, no console warning, just a seemingly "broken" page.
 
 If a fresh `docker compose build` ever regresses on GWT compile errors, re-derive from `com.google.gwt.dev.Compiler`'s own diagnostics (`gwt { logLevel = "TRACE" }` temporarily helps) rather than reverting these fixes blind — each one traces back to a specific root cause documented above.
 
@@ -42,8 +45,10 @@ If a fresh `docker compose build` ever regresses on GWT compile errors, re-deriv
 
 ### Module split
 - `core/src/com/nabatfarsi/` — all game logic, platform-agnostic (libGDX `ApplicationListener`/`Game`/`Screen` classes). This is where nearly all code changes happen.
-- `html/src/com/nabatfarsi/gwt/GwtLauncher.java` — the GWT entry point; just constructs `nabatfarsi` (the `Game` subclass) with a 1200x640 config.
-- `html/webapp/` — static assets served to the browser: `gameplay/<levelname>/medium/*.png` + `.atlas` (TexturePacker atlases, one per level), `gamesounds/`, `index.html`.
+- `html/src/com/nabatfarsi/gwt/GwtLauncher.java` — the GWT entry point; constructs `nabatfarsi` (the `Game` subclass) with a **resizable** config (fills the browser viewport; each Screen's `FitViewport(GameConfig.WORLD_WIDTH, GameConfig.WORLD_HEIGHT, ...)` preserves the 5:3 aspect ratio and letterboxes the rest — don't go back to a fixed pixel size).
+- `html/webapp/index.html` — the **landing page** (Farsi/RTL), not the game itself. See "Landing page & contact form" below.
+- `html/webapp/` — static assets served to the browser: `gameplay/<levelname>/medium/*.png` + `.atlas` (TexturePacker atlases, one per level), `gamesounds/`.
+- `contact-backend/` — small standalone Flask service for the landing page's contact form (own Dockerfile, not part of the Gradle build).
 
 ### App/Screen flow
 `nabatfarsi.java` (in `core`) is the libGDX `Game` entry point. It initializes `GameManager` (a singleton wrapping `Preferences` for persisted level/menu state) and pushes screens:
@@ -68,6 +73,13 @@ Adding a new level means: add its atlas to `assets/AssetPaths.java` + `AssetDesc
 
 ### GameManager (persistence)
 `common/GameManager.java` is a singleton wrapping libGDX `Preferences` (browser localStorage under GWT) for persisting current/previous level, current/previous menu, and purchase state across sessions. Note: this is a web build — `nabatfarsi.ISPURCHASED()` and `getGameEventListener()` are hardcoded to always return "purchased"/no-op, since there's no IAP in the web version.
+
+### Landing page & contact form
+`html/webapp/index.html` is a plain-HTML/CSS/JS landing page (Farsi, RTL, Vazirmatn web font) — it is **not** processed by GWT and has no dependency on the game's Java code. It has two pieces of interactive state:
+- **Play button**: hides the `#landing` div, shows `#embed-nabatfarsi` (`display:flex`), then dynamically injects `<script src="nabatfarsi/nabatfarsi.nocache.js">`. The GWT app is *not* loaded on initial page load — only once Play is clicked — so it must be visible in the DOM before the script runs (GWT's canvas sizing reads `Window.getClientWidth/Height`, and some browsers refuse a WebGL context on a `display:none` canvas). The in-game exit button (`ActorGenerator.GenerateExitIcon`) calls `Gdx.net.openURI("/")` (with `config.openURLInNewWindow = false` in `GwtLauncher`) to navigate back to this same landing page, rather than `Gdx.app.exit()` (a no-op on web).
+- **Contact modal**: a form (name/email/message + a hidden honeypot field) that POSTs JSON to `/contact/submit`.
+
+`contact-backend/app.py` is the backend: Flask + SQLite (file at `/data/messages.db`, a named Docker volume `contact-data`), routes are relative (`/submit`, `/admin`, `/admin/delete/<id>`) because nginx's `location /contact/ { proxy_pass http://contact-api:5000/; }` strips the `/contact/` prefix. `/admin` is protected by HTTP Basic Auth (`CONTACT_ADMIN_USER`/`CONTACT_ADMIN_PASSWORD` env vars, from `.env`) and lists/deletes submitted messages — this is how you check for messages, there's no email notification. Spam mitigation is a honeypot field only (no CAPTCHA/rate-limiting) — submissions with the hidden `website` field filled in are silently dropped.
 
 ## Working with assets
 

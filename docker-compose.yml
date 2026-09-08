@@ -3,3 +3,16 @@ services:
     build: .
     ports:
       - "8081:80"
+    depends_on:
+      - contact-api
+
+  contact-api:
+    build: ./contact-backend
+    environment:
+      - CONTACT_ADMIN_USER=${CONTACT_ADMIN_USER:-admin}
+      - CONTACT_ADMIN_PASSWORD=${CONTACT_ADMIN_PASSWORD:?Set CONTACT_ADMIN_PASSWORD in .env}
+    volumes:
+      - contact-data:/data
+
+volumes:
+  contact-data:

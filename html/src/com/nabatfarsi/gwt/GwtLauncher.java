@@ -16,6 +16,9 @@ public class GwtLauncher extends GwtApplication {
         config.padHorizontal = 0;
         config.padVertical = 0;
         config.useGL30 = false;
+        // Gdx.net.openURI("/") (used by the in-game exit button to return to the landing
+        // page) should navigate in this tab, not pop a new one.
+        config.openURLInNewWindow = false;
         return config;
     }
 

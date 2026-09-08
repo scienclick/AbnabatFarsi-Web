@@ -1,10 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="fa" dir="rtl">
 <head>
-    <title>Nabat Farsi</title>
+    <title>نبات فارسی</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --sky-top: #bfe4ff;
+            --sky-bottom: #eaf7ff;
+            --ink: #1f3350;
+            --muted: #5b7089;
+            --card: #ffffff;
+            --accent: #ff9e2c;
+            --accent-dark: #e8830f;
+            --accent2: #35b0e0;
+        }
+        * { box-sizing: border-box; }
         html, body {
             margin: 0;
             padding: 0;
@@ -12,11 +26,238 @@
             height: 100%;
             background: #000;
             overflow: hidden;
+            font-family: 'Vazirmatn', Tahoma, Arial, sans-serif;
         }
+
+        /* ---------- Landing page ---------- */
+        #landing {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 55%, #fdf6e9 100%);
+            color: var(--ink);
+        }
+        .wrap {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 32px 20px 60px;
+        }
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 22px;
+            color: var(--ink);
+        }
+        .brand-badge {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent2), #7bd8ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 6px 14px rgba(53, 176, 224, 0.35);
+        }
+        .btn-contact-top {
+            border: 2px solid var(--accent2);
+            color: var(--accent2);
+            background: transparent;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 15px;
+            padding: 8px 18px;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+        .btn-contact-top:hover { background: var(--accent2); color: #fff; }
+
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-top: 40px;
+        }
+        .hero-illustration {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffd27a, var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 84px;
+            box-shadow: 0 18px 36px rgba(232, 131, 15, 0.28);
+            margin-bottom: 28px;
+            /* Placeholder illustration — swap for real artwork later */
+        }
+        .hero h1 {
+            font-size: 40px;
+            font-weight: 800;
+            margin: 0 0 12px;
+        }
+        .hero p.tagline {
+            font-size: 19px;
+            color: var(--muted);
+            max-width: 520px;
+            line-height: 1.9;
+            margin: 0 0 32px;
+        }
+        .btn-play {
+            font-family: inherit;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: #fff;
+            font-size: 22px;
+            font-weight: 800;
+            padding: 18px 56px;
+            border-radius: 999px;
+            box-shadow: 0 14px 28px rgba(232, 131, 15, 0.4);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .btn-play:hover { transform: translateY(-2px); box-shadow: 0 18px 32px rgba(232, 131, 15, 0.48); }
+        .btn-play:active { transform: translateY(0); }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-top: 64px;
+        }
+        .feature {
+            background: var(--card);
+            border-radius: 18px;
+            padding: 22px 18px;
+            text-align: center;
+            box-shadow: 0 10px 24px rgba(31, 51, 80, 0.08);
+        }
+        .feature .icon { font-size: 34px; margin-bottom: 10px; }
+        .feature h3 { font-size: 16px; margin: 0 0 6px; }
+        .feature p { font-size: 14px; color: var(--muted); margin: 0; line-height: 1.7; }
+
+        footer.site-footer {
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 56px;
+        }
+
+        @media (max-width: 640px) {
+            .features { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 30px; }
+            .hero p.tagline { font-size: 16px; }
+            .btn-play { font-size: 18px; padding: 15px 42px; }
+        }
+
+        /* ---------- Contact modal ---------- */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 30, 50, 0.55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 20;
+        }
+        .modal-backdrop.open { display: flex; }
+        .modal {
+            background: #fff;
+            width: 100%;
+            max-width: 420px;
+            border-radius: 20px;
+            padding: 28px 26px 24px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        .modal h2 {
+            margin: 0 0 6px;
+            font-size: 22px;
+            color: var(--ink);
+        }
+        .modal p.sub {
+            margin: 0 0 20px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            background: #f1f4f8;
+            color: var(--muted);
+            font-size: 16px;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .modal-close:hover { background: #e5eaf1; }
+        .field { margin-bottom: 14px; text-align: right; }
+        .field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 6px;
+        }
+        .field input, .field textarea {
+            width: 100%;
+            font-family: inherit;
+            font-size: 15px;
+            border: 1.5px solid #dfe6ee;
+            border-radius: 10px;
+            padding: 10px 12px;
+            resize: vertical;
+            background: #fbfcfe;
+        }
+        .field input:focus, .field textarea:focus {
+            outline: none;
+            border-color: var(--accent2);
+            background: #fff;
+        }
+        .field.honeypot { position: absolute; left: -9999px; top: -9999px; }
+        .btn-submit {
+            width: 100%;
+            font-family: inherit;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--accent2), #2591b8);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 13px;
+            border-radius: 10px;
+            margin-top: 6px;
+        }
+        .btn-submit:disabled { opacity: 0.6; cursor: default; }
+        .form-status {
+            margin-top: 12px;
+            font-size: 14px;
+            text-align: center;
+            min-height: 18px;
+        }
+        .form-status.ok { color: #1a8a4a; }
+        .form-status.err { color: #d64545; }
+
+        /* ---------- Game container ---------- */
         #embed-nabatfarsi {
             width: 100vw;
             height: 100vh;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
         }
@@ -26,8 +267,152 @@
     </style>
 </head>
 <body>
-    <div id="embed-nabatfarsi" align="center">
+
+<div id="landing">
+    <div class="wrap">
+        <div class="topbar">
+            <div class="brand">
+                <span class="brand-badge">🍬</span>
+                نبات فارسی
+            </div>
+            <button class="btn-contact-top" id="openContactTop">تماس با ما</button>
+        </div>
+
+        <div class="hero">
+            <div class="hero-illustration">🦋</div>
+            <h1>یادگیری الفبای فارسی، همراه با بازی و سرگرمی</h1>
+            <p class="tagline">
+                نبات فارسی یک بازی رنگارنگ برای کودکان است که به آن‌ها کمک می‌کند
+                حروف الفبای فارسی را با تصویر، صدا و بازی یاد بگیرند.
+            </p>
+            <button class="btn-play" id="playBtn">🎮 شروع بازی</button>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="icon">🔤</div>
+                <h3>یادگیری حروف</h3>
+                <p>آموزش گام‌به‌گام الفبای فارسی برای کودکان</p>
+            </div>
+            <div class="feature">
+                <div class="icon">🎨</div>
+                <h3>رنگارنگ و جذاب</h3>
+                <p>تصاویر و صداهای شاد که توجه کودک را جلب می‌کند</p>
+            </div>
+            <div class="feature">
+                <div class="icon">🧩</div>
+                <h3>یادگیری از طریق بازی</h3>
+                <p>تمرین حروف در قالب بازی‌های ساده و سرگرم‌کننده</p>
+            </div>
+        </div>
+
+        <footer class="site-footer">
+            © 2026 نبات فارسی — تمامی حقوق محفوظ است.
+        </footer>
     </div>
-    <script src="nabatfarsi/nabatfarsi.nocache.js"></script>
+</div>
+
+<div id="embed-nabatfarsi"></div>
+
+<div class="modal-backdrop" id="contactBackdrop">
+    <div class="modal">
+        <button class="modal-close" id="closeContact" aria-label="بستن">✕</button>
+        <h2>تماس با ما</h2>
+        <p class="sub">پیام خود را برای ما بفرستید، در اسرع وقت پاسخ می‌دهیم.</p>
+        <form id="contactForm">
+            <div class="field honeypot">
+                <label for="website">Website</label>
+                <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+            </div>
+            <div class="field">
+                <label for="name">نام</label>
+                <input type="text" id="name" name="name" required maxlength="200">
+            </div>
+            <div class="field">
+                <label for="email">ایمیل</label>
+                <input type="email" id="email" name="email" required maxlength="200">
+            </div>
+            <div class="field">
+                <label for="message">پیام</label>
+                <textarea id="message" name="message" rows="4" required maxlength="5000"></textarea>
+            </div>
+            <button type="submit" class="btn-submit" id="submitBtn">ارسال پیام</button>
+            <div class="form-status" id="formStatus"></div>
+        </form>
+    </div>
+</div>
+
+<script>
+    (function () {
+        var backdrop = document.getElementById('contactBackdrop');
+        var openBtn = document.getElementById('openContactTop');
+        var closeBtn = document.getElementById('closeContact');
+        var form = document.getElementById('contactForm');
+        var status = document.getElementById('formStatus');
+        var submitBtn = document.getElementById('submitBtn');
+
+        function openModal() {
+            backdrop.classList.add('open');
+        }
+        function closeModal() {
+            backdrop.classList.remove('open');
+        }
+
+        openBtn.addEventListener('click', openModal);
+        closeBtn.addEventListener('click', closeModal);
+        backdrop.addEventListener('click', function (e) {
+            if (e.target === backdrop) closeModal();
+        });
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            status.textContent = '';
+            status.className = 'form-status';
+            submitBtn.disabled = true;
+
+            var payload = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+                website: document.getElementById('website').value
+            };
+
+            fetch('/contact/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(function (res) {
+                if (!res.ok) throw new Error('bad status');
+                return res.json();
+            }).then(function () {
+                status.textContent = 'پیام شما با موفقیت ارسال شد. متشکریم!';
+                status.className = 'form-status ok';
+                form.reset();
+                setTimeout(closeModal, 1600);
+            }).catch(function () {
+                status.textContent = 'مشکلی پیش آمد. لطفاً دوباره تلاش کنید.';
+                status.className = 'form-status err';
+            }).finally(function () {
+                submitBtn.disabled = false;
+            });
+        });
+
+        // ---- Play: swap to the game and boot the GWT app ----
+        var gameLoaded = false;
+        document.getElementById('playBtn').addEventListener('click', function () {
+            document.getElementById('landing').style.display = 'none';
+            var gameContainer = document.getElementById('embed-nabatfarsi');
+            gameContainer.style.display = 'flex';
+
+            if (!gameLoaded) {
+                gameLoaded = true;
+                var script = document.createElement('script');
+                script.src = 'nabatfarsi/nabatfarsi.nocache.js';
+                document.body.appendChild(script);
+            }
+        });
+    })();
+</script>
+
 </body>
 </html>
