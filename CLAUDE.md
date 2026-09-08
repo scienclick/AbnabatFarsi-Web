@@ -21,7 +21,7 @@ There are no unit tests in this repo currently.
 
 ### Docker
 
-`docker-compose.yml` runs two services: `app` (the game — `Dockerfile` builds the WAR with a `gradle:7.6-jdk8` image, then unpacks it into an `nginx:1.25-alpine` image; `nginx.conf` handles SPA fallback, long-lived caching for `.cache.js`/atlas/image assets, and reverse-proxies `/contact/` to `contact-api`) and `contact-api` (the landing page's contact-form backend, see below). Serves on host port **8081** (8080 is commonly taken by other local projects).
+`docker-compose.yml` runs two services: `app` (the game — `Dockerfile` builds the WAR with a `gradle:7.6-jdk8` image, then unpacks it into an `nginx:1.25-alpine` image; `nginx.conf` handles SPA fallback, long-lived caching for `.cache.js`/atlas/image assets, and reverse-proxies `/contact/` to `contact-api`) and `contact-api` (the landing page's contact-form backend, see below). Serves on host port **80**.
 
 `contact-api` requires `CONTACT_ADMIN_PASSWORD` to be set — copy `.env.example` to `.env` (gitignored) and set a real password before `docker compose up`; the container refuses to start otherwise.
 
