@@ -1,0 +1,76 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        jcenter()
+    }
+    dependencies {
+        classpath "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6"
+    }
+}
+
+allprojects {
+    apply plugin: "eclipse"
+    apply plugin: "idea"
+
+    version = '1.0'
+    ext {
+        appName = "Nabat Farsi"
+        gdxVersion = '1.12.0'
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        jcenter()
+    }
+}
+
+project(":core") {
+    apply plugin: "java"
+
+    dependencies {
+        implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+    }
+}
+
+project(":html") {
+    apply plugin: "gwt"
+    apply plugin: "war"
+
+    dependencies {
+        implementation project(":core")
+        implementation "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
+        implementation "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
+        implementation "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
+        implementation files('../core/src')
+    }
+
+    gwt {
+        gwtVersion = "2.10.0"
+        maxHeapSize = "1G"
+        sourceLevel = 1.8
+
+        modules "com.nabatfarsi.GdxDefinition"
+        devModules "com.nabatfarsi.GdxDefinitionSuperdev"
+
+        superDev {
+            noServer = true
+            port = 8080
+            codeServerPort = 9876
+            args = "-logLevel INFO"
+        }
+
+        compiler {
+            strict = true
+            disableCastChecking = true
+        }
+    }
+}
+
+tasks.eclipse.doLast {
+    delete ".project"
+}

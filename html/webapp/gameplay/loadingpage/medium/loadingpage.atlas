@@ -1,0 +1,62 @@
+
+loadingpage.png
+size: 2048,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+BG0_loading
+  rotate: false
+  xy: 2, 621
+  size: 680, 383
+  orig: 680, 383
+  offset: 0, 0
+  index: -1
+BG_circle
+  rotate: false
+  xy: 2, 119
+  size: 492, 500
+  orig: 492, 500
+  offset: 0, 0
+  index: -1
+j1
+  rotate: false
+  xy: 846, 2
+  size: 331, 500
+  orig: 331, 500
+  offset: 0, 0
+  index: -1
+j2
+  rotate: false
+  xy: 1588, 504
+  size: 383, 500
+  orig: 383, 500
+  offset: 0, 0
+  index: -1
+j3
+  rotate: false
+  xy: 1157, 504
+  size: 429, 500
+  orig: 429, 500
+  offset: 0, 0
+  index: -1
+j4
+  rotate: false
+  xy: 1179, 2
+  size: 321, 500
+  orig: 321, 500
+  offset: 0, 0
+  index: -1
+j5
+  rotate: false
+  xy: 496, 2
+  size: 348, 500
+  orig: 348, 500
+  offset: 0, 0
+  index: -1
+j6
+  rotate: false
+  xy: 684, 504
+  size: 471, 500
+  orig: 471, 500
+  offset: 0, 0
+  index: -1

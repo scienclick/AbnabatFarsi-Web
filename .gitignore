@@ -1,0 +1,26 @@
+# Gradle
+.gradle/
+build/
+html/build/
+core/build/
+out/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# GWT
+gwt-unitCache/
+war/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

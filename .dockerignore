@@ -1,0 +1,7 @@
+.gradle/
+build/
+html/build/
+core/build/
+.git/
+*.class
+*.log
