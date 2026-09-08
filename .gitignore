@@ -22,5 +22,8 @@ war/
 .DS_Store
 Thumbs.db
 
+# Local environment (may contain SDK paths)
+local.properties
+
 # Logs
 *.log
