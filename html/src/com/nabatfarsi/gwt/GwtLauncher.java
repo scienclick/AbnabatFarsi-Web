@@ -9,7 +9,12 @@ public class GwtLauncher extends GwtApplication {
 
     @Override
     public GwtApplicationConfiguration getConfig() {
-        GwtApplicationConfiguration config = new GwtApplicationConfiguration(1200, 640);
+        // Resizable: fills the available browser viewport (minus padding) instead of a fixed
+        // 1200x640 canvas. FitViewport(GameConfig.WORLD_WIDTH, GameConfig.WORLD_HEIGHT, ...) in
+        // each Screen preserves the game's aspect ratio and letterboxes the rest.
+        GwtApplicationConfiguration config = new GwtApplicationConfiguration();
+        config.padHorizontal = 0;
+        config.padVertical = 0;
         config.useGL30 = false;
         return config;
     }

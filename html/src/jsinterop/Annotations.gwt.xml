@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  com.google.jsinterop:jsinterop-annotations ships no GWT module of its own, so nothing
+  registers its "jsinterop.annotations" package as GWT source. gdx-backend-gwt's generated
+  reflection code (com.badlogic.gwtref) references @JsType/@JsProperty/etc., so without this
+  module GWT compilation fails with "No source code is available for type
+  jsinterop.annotations.JsProperty". Inherited from GdxDefinition(.Superdev).gwt.xml.
+-->
+<module>
+    <source path="annotations" />
+</module>

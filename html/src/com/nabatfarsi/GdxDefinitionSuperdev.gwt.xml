@@ -3,7 +3,9 @@
 <module rename-to="nabatfarsi">
     <inherits name='com.badlogic.gdx.backends.gdx_backends_gwt' />
     <inherits name='com.nabatfarsi.Core' />
+    <inherits name='jsinterop.Annotations' />
+    <source path="" />
     <entry-point class='com.nabatfarsi.gwt.GwtLauncher' />
-    <set-configuration-property name="gdx.assetpath" value="." />
+    <set-configuration-property name="gdx.assetpath" value="webapp" />
     <collapse-all-properties />
 </module>

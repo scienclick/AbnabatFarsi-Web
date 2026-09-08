@@ -181,7 +181,7 @@ public class DebugCameraConfig {
 
     @Override
     public String toString() {
-        String LS = System.getProperty("line.separator");
+        String LS = "\n";
 
         return "DebugCameraConfig { " + LS +
                 "maxZoomIn= " + maxZoomIn + LS +

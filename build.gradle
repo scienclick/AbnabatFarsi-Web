@@ -3,10 +3,13 @@ buildscript {
         mavenLocal()
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
-        classpath "de.richsource.gradle.plugins:gwt-gradle-plugin:0.6"
+        // de.richsource.gradle.plugins:gwt-gradle-plugin:0.6 was only ever published to
+        // jcenter/bintray, both shut down. org.docstr:gwt-gradle-plugin is the maintained
+        // fork (same "gwt" plugin id / DSL) published to the Gradle Plugin Portal.
+        classpath "org.docstr:gwt-gradle-plugin:1.1.31"
     }
 }
 
@@ -25,7 +28,6 @@ allprojects {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-        jcenter()
     }
 }
 
@@ -46,7 +48,20 @@ project(":html") {
         implementation "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
         implementation "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
         implementation "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
+        // gwt-user's binary jsinterop-annotations dependency ships .class files only; GWT needs
+        // the actual .java source on the classpath to translate JsInterop-annotated gdx code.
+        implementation "com.google.jsinterop:jsinterop-annotations:2.0.0:sources"
         implementation files('../core/src')
+        implementation files('src')
+    }
+
+    // gdx-backend-gwt's POM hard-pins com.google.gwt:gwt-user:2.8.2. The gwt plugin
+    // (gwtVersion below) already supplies the real GWT SDK as org.gwtproject:gwt-user/gwt-dev
+    // 2.10.0, so exclude the transitive copy everywhere rather than end up with two
+    // different-GAV copies of gwt-user on the compile classpath at once (which breaks GWT
+    // compilation with mismatched JRE emulation classes).
+    configurations.all {
+        exclude group: "com.google.gwt", module: "gwt-user"
     }
 
     gwt {
@@ -58,10 +73,7 @@ project(":html") {
         devModules "com.nabatfarsi.GdxDefinitionSuperdev"
 
         superDev {
-            noServer = true
-            port = 8080
-            codeServerPort = 9876
-            args = "-logLevel INFO"
+            port = 9876
         }
 
         compiler {

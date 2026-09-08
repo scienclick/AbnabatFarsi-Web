@@ -7,3 +7,14 @@ eclipse.project {
     name = appName + "-html"
     linkedResource name: 'assets', type: '2', location: 'PARENT-1-PROJECT_LOC/html/webapp'
 }
+
+// Game assets (gameplay/, gamesounds/) reach the war via the GWT preloader mechanism
+// (gdx.assetpath in GdxDefinition.gwt.xml), which hashes filenames for cache-busting.
+// index.html itself needs to land at the war root unprocessed, which neither the gwt
+// plugin's war wiring nor the war plugin's default webAppDir (src/main/webapp, unused
+// here) does on its own.
+war {
+    from('webapp') {
+        include 'index.html'
+    }
+}

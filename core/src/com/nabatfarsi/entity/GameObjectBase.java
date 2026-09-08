@@ -12,8 +12,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Logger;
 
-import java.util.UUID;
-
 import static com.nabatfarsi.util.staticMethods.StaticMethods.lagtimeElapsed;
 
 /**
@@ -22,7 +20,6 @@ import static com.nabatfarsi.util.staticMethods.StaticMethods.lagtimeElapsed;
 public  class GameObjectBase {
     private static final Logger log = new Logger(GameObjectBase.class.getCanonicalName(), Logger.DEBUG);
 
-    private UUID id;
     private float x;
     private float y;
     private float width;
@@ -114,7 +111,6 @@ public  class GameObjectBase {
     }
     private void InitializeGameObjectBase(float boundsRadius, float yspan, float x, float y) {
 
-        id = UUID.randomUUID();
         bounds = new Circle(x, y, boundsRadius);
         this.yspan = yspan;
         this.color = GameColorsConfettis.GetRandomColor();
@@ -127,12 +123,6 @@ public  class GameObjectBase {
 
 
     }
-
-    public UUID getId() {
-        return id;
-    }
-
-
 
     public void setPosition(float x, float y) {
         this.x = x;
@@ -346,8 +336,7 @@ public  class GameObjectBase {
 
     @Override
     public boolean equals(Object o) {
-        GameObjectBase Go = (GameObjectBase) o;
-        return this.id == Go.id;
+        return this == o;
     }
 
 

@@ -3,19 +3,22 @@
 <head>
     <title>Nabat Farsi</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=1200, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <style>
         html, body {
             margin: 0;
             padding: 0;
+            width: 100%;
+            height: 100%;
             background: #000;
             overflow: hidden;
         }
-        #embed-html {
-            width: 1200px;
-            height: 640px;
-            margin: 0 auto;
-            display: block;
+        #embed-nabatfarsi {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         canvas {
             display: block;
@@ -23,8 +26,7 @@
     </style>
 </head>
 <body>
-    <div id="embed-html" align="center">
-        <canvas id="gwt-canvas" style="display:block;"></canvas>
+    <div id="embed-nabatfarsi" align="center">
     </div>
     <script src="nabatfarsi/nabatfarsi.nocache.js"></script>
 </body>
