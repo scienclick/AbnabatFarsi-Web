@@ -3,8 +3,13 @@ services:
     build: .
     ports:
       - "80:80"
+      - "443:443"
     depends_on:
       - contact-api
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - certbot-www:/var/www/certbot:ro
+    restart: unless-stopped
 
   contact-api:
     build: ./contact-backend
@@ -13,6 +18,8 @@ services:
       - CONTACT_ADMIN_PASSWORD=${CONTACT_ADMIN_PASSWORD:?Set CONTACT_ADMIN_PASSWORD in .env}
     volumes:
       - contact-data:/data
+    restart: unless-stopped
 
 volumes:
   contact-data:
+  certbot-www:
